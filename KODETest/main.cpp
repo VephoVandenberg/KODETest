@@ -39,26 +39,17 @@ int main(int argc, char** argv)
 				>> obj.m_timer;
 
 			objects.emplace_back(obj);
-			std::cout << obj << std::endl;
 		}
 	}
 
 	reader.close();
 
 	// Sort by groups
-	std::cout << std::endl;
 	Base::Grouper grouper;
-	grouper.groupAndSort(objects, Base::GroupKinds::DISTANCE);
-
+	Base::GroupKinds token = Base::GroupKinds::TIMER;
+	grouper.groupAndSort(objects, token);
 	// Write to file
-	std::ofstream writer("output.txt");
-
-	for (const auto& obj : objects)
-	{
-		writer << obj;
-	}
-
-	writer.close();
-
+	grouper.writeGroupsToFile("output.txt", token);
+	
 	return 0;
 }

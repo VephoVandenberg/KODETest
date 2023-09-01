@@ -8,7 +8,7 @@ namespace Base
 {
 	class Grouper;
 
-	class App
+	class App final
 	{
 	public:
 		App();
