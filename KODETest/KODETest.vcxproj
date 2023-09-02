@@ -71,7 +71,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>D:\Working\KODETest\KODETest\vendor\date\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -140,7 +140,6 @@
     <ClInclude Include="src\group.h" />
     <ClInclude Include="src\grouper.h" />
     <ClInclude Include="src\object.h" />
-    <ClInclude Include="vendor\date\include\date.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="input.txt" />

@@ -1,5 +1,9 @@
+
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <fstream>
 #include <iostream>
+#include <chrono>
 
 #include "grouper.h"
 
@@ -30,6 +34,7 @@ void Grouper::groupAndSort(std::vector<Object>& objects, const GroupKinds kind)
 
 	case GroupKinds::TIMER:
 		groupByTime(objects);
+		sortGroups<TypeTime>(m_timerGroups, s_fComparotors[kind]);
 		break;
 
 	case GroupKinds::TYPE:
@@ -72,20 +77,47 @@ void Grouper::groupByType(const std::vector<Object>& objects)
 	}
 }
 
-std::chrono::system_clock::time_point Grouper::doubleToTime(double d)
-{
-	using namespace std::chrono;
-	using namespace date;
-	using ddays = duration<double, days::period>;
-	return sys_days{ December / 30 / 1899 } + round<system_clock::duration>(ddays{ d });
-}
-
 void Grouper::groupByTime(const std::vector<Object>& objects)
 {
-	using date::operator<<;
+	std::time_t currentTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+	std::tm today = *gmtime(&currentTime);
+	
 	for (auto& obj : objects)
 	{
-		std::cout << doubleToTime(obj.m_timer) << std::endl;
+		std::time_t t = std::chrono::system_clock::to_time_t(
+			std::chrono::system_clock::time_point(
+				std::chrono::duration_cast<std::chrono::seconds>(std::chrono::duration<double>(obj.m_timer))));
+
+		std::tm date = *gmtime(&t);
+
+		if (today.tm_year == date.tm_year &&
+			today.tm_yday == date.tm_yday)
+		{
+			m_timerGroups[TypeTime::TODAY].push_back(obj);
+		}
+		else if (today.tm_year == date.tm_year &&
+			today.tm_yday - date.tm_yday == 1)
+		{
+			m_timerGroups[TypeTime::YESTERDAY].push_back(obj);
+		}
+		else if (today.tm_year == date.tm_year &&
+			today.tm_yday - date.tm_yday < 7)
+		{
+			m_timerGroups[TypeTime::THIS_WEEK].push_back(obj);
+		}
+		else if (today.tm_year == date.tm_year &&
+			today.tm_mon == date.tm_mon)
+		{
+			m_timerGroups[TypeTime::THIS_MONTH].push_back(obj);
+		}
+		else if (today.tm_year == date.tm_year)
+		{
+			m_timerGroups[TypeTime::THIS_YEAR].push_back(obj);
+		}
+		else
+		{
+			m_timerGroups[TypeTime::EARLIER].push_back(obj);
+		}
 	}
 }
 
@@ -139,7 +171,18 @@ void Grouper::writeGroupsToFile(const char* path, const GroupKinds kind)
 		break;
 
 	case GroupKinds::TIMER:
-		writeGroups<double>(m_timerGroups, file);
+		for (auto& group : m_timerGroups)
+		{
+			for (auto& obj : group.second)
+			{
+				std::time_t t = std::chrono::system_clock::to_time_t(
+					std::chrono::system_clock::time_point(
+						std::chrono::duration_cast<std::chrono::seconds>(std::chrono::duration<double>(obj.m_timer))));
+
+				std::cout << ctime(&t) << std::endl;
+			}
+		}
+		writeGroups<TypeTime>(m_timerGroups, file);
 		break;
 	}
 
@@ -150,6 +193,6 @@ void Grouper::clearGroups()
 {
 	clearGroup<float>(m_distanceGroups);
 	clearGroup<char>(m_nameGroups);
-	clearGroup<double>(m_timerGroups);
+	clearGroup<TypeTime>(m_timerGroups);
 	clearGroup<const char*>(m_typeGroups);
 }

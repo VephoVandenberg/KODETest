@@ -16,12 +16,12 @@ namespace Base
 
 	enum class TypeTime
 	{
-		TODAY,
-		YESTERDAY,
-		THIS_WEEK,
-		THIS_MONTH,
+		EARLIER,
 		THIS_YEAR,
-		EARLIER
+		THIS_MONTH,
+		THIS_WEEK,
+		YESTERDAY,
+		TODAY,
 	};
 
 	enum class ObjType
@@ -51,7 +51,7 @@ namespace Base
 		{
 			GroupKinds::TIMER,
 			[](const Object& obj1, const Object& obj2) {
-				return obj1.getDistance() < obj2.getDistance();
+				return obj1.m_timer < obj2.m_timer;
 			}
 		},
 	};

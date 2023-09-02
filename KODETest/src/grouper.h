@@ -3,7 +3,6 @@
 #include <map>
 #include <vector>
 #include <algorithm>
-#include <date.h>
 
 #include "group.h"
 
@@ -32,8 +31,6 @@ namespace Base
 		void groupByTime(const std::vector<Object>& objects);
 		void groupByType(const std::vector<Object>& objects);
 
-		std::chrono::system_clock::time_point doubleToTime(double d);
-
 		template<typename T>
 		void sortGroups(std::map<T, std::vector<Object>>& groups, Comparotor compare);
 		template<typename T>
@@ -43,7 +40,7 @@ namespace Base
 
 		std::map<char, std::vector<Object>> m_nameGroups;
 		std::map<float, std::vector<Object>> m_distanceGroups;
-		std::map<double, std::vector<Object>> m_timerGroups;
+		std::map<TypeTime, std::vector<Object>> m_timerGroups;
 		std::map<const char*, std::vector<Object>> m_typeGroups;
 		
 	};
