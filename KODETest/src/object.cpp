@@ -29,7 +29,7 @@ std::ofstream& Base::operator<<(std::ofstream& file, const Object& obj)
 
 std::ostream& Base::operator<<(std::ostream& o, const Object& obj)
 {
-	o << obj.getDistance() << " " << obj.m_name << " "
+	o << " " << obj.m_name << " "
 		<< std::defaultfloat << obj.m_x << " " 
 		<< std::defaultfloat << obj.m_y << " " 
 		<< obj.m_type << " " 

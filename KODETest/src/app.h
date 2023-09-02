@@ -1,13 +1,14 @@
 #pragma once
 
+#include <memory>
 #include <vector>
+#include <fstream>
 
 #include "object.h"
+#include "grouper.h"
 
 namespace Base
 {
-	class Grouper;
-
 	class App final
 	{
 	public:
@@ -23,8 +24,16 @@ namespace Base
 
 	private:
 		void init();
+		void addObject(const Object& obj);
+		void readObjectsFromFile(const std::string& path);
 		
-		std::vector<Object> m_objects = {};
+		std::vector<Object> m_objects = {};		
+		std::unique_ptr<Grouper> m_grouper = nullptr;
+		std::ifstream m_reader;
+		std::string m_currReaderPath;
+		std::string m_currWriterPath;
+
+		GroupKinds m_groupToken = GroupKinds::DISTANCE;
 
 		bool m_isRunning = false;
 	};

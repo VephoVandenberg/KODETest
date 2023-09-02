@@ -17,7 +17,7 @@ namespace Base
 		~Grouper() = default;
 
 		void groupAndSort(std::vector<Object>& objects, const GroupKinds kind);
-		void writeGroupsToFile(const char* path, const GroupKinds kind);
+		void writeGroupsToFile(const std::string& path, const GroupKinds kind);
 		void clearGroups();
 
 		Grouper(const Grouper&) = delete;

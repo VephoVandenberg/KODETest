@@ -19,25 +19,28 @@ namespace DistanceKeys
 
 void Grouper::groupAndSort(std::vector<Object>& objects, const GroupKinds kind)
 {
-	// First group the objects
 	switch (kind)
 	{
 	case GroupKinds::DISTANCE:
+		clearGroup<float>(m_distanceGroups);
 		groupByDistance(objects);
 		sortGroups<float>(m_distanceGroups, s_fComparotors[kind]);
 		break;
 
 	case GroupKinds::NAME:
+		clearGroup<char>(m_nameGroups);
 		groupByName(objects);
 		sortGroups<char>(m_nameGroups, s_fComparotors[kind]);
 		break;
 
 	case GroupKinds::TIMER:
+		clearGroup<TypeTime>(m_timerGroups);
 		groupByTime(objects);
 		sortGroups<TypeTime>(m_timerGroups, s_fComparotors[kind]);
 		break;
 
 	case GroupKinds::TYPE:
+		clearGroup<const char*>(m_typeGroups);
 		groupByType(objects);
 		sortGroups<const char*>(m_typeGroups, s_fComparotors[kind]);
 		break;
@@ -101,7 +104,8 @@ void Grouper::groupByTime(const std::vector<Object>& objects)
 			m_timerGroups[TypeTime::YESTERDAY].push_back(obj);
 		}
 		else if (today.tm_year == date.tm_year &&
-			today.tm_yday - date.tm_yday < 7)
+			today.tm_yday - date.tm_yday < 7 &&
+			today.tm_wday > date.tm_wday)
 		{
 			m_timerGroups[TypeTime::THIS_WEEK].push_back(obj);
 		}
@@ -146,7 +150,7 @@ void Grouper::groupByDistance(const std::vector<Object>& objects)
 	}
 }
 
-void Grouper::writeGroupsToFile(const char* path, const GroupKinds kind)
+void Grouper::writeGroupsToFile(const std::string& path, const GroupKinds kind)
 {
 	std::ofstream file(path);
 	
